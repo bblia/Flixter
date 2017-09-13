@@ -14,6 +14,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
     @IBOutlet weak var tableView: UITableView!
 
+    @IBOutlet weak var alertView: UIView!
     
     var movies: [NSDictionary]?
     
@@ -37,6 +38,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func fetchMovies(_ refreshControl: UIRefreshControl) {
+        self.alertView.isHidden = true
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -45,15 +47,19 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         MBProgressHUD.showAdded(to: self.view, animated: true)
         
         let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            MBProgressHUD.hide(for: self.view, animated: true)
             if let data = data {
                 if let responseDictionary = try!
                     JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                     self.movies = responseDictionary["results"] as! [NSDictionary]
                     self.tableView.reloadData()
-                    refreshControl.endRefreshing()
                 }
+            } else if error != nil {
+                self.alertView.isHidden = false
+                self.tableView.bringSubview(toFront: self.alertView)
+                
             }
+            refreshControl.endRefreshing()
+            MBProgressHUD.hide(for: self.view, animated: true)
         }
         task.resume()
     }
