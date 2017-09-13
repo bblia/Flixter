@@ -7,4 +7,5 @@ target 'Flixter' do
 
   # Pods for Flixter
   pod 'AFNetworking'
+  pod 'MBProgressHUD'
 end
