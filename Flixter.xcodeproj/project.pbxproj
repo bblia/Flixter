@@ -14,6 +14,7 @@
 		112526D91F68CF4600E10314 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 112526D71F68CF4600E10314 /* LaunchScreen.storyboard */; };
 		112526E11F68D0BC00E10314 /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112526E01F68D0BC00E10314 /* MoviesViewController.swift */; };
 		112526E41F68DD3500E10314 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112526E31F68DD3500E10314 /* MovieCell.swift */; };
+		112526E71F68E65700E10314 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112526E61F68E65700E10314 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		112526DA1F68CF4600E10314 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		112526E01F68D0BC00E10314 /* MoviesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
 		112526E31F68DD3500E10314 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		112526E61F68E65700E10314 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		11993340101D43BCA298A5CD /* Pods_Flixter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flixter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2429E1B828988562FB21F07A /* Pods-Flixter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flixter.release.xcconfig"; path = "Pods/Target Support Files/Pods-Flixter/Pods-Flixter.release.xcconfig"; sourceTree = "<group>"; };
 		A1E82249F671B4408CFB0423 /* Pods-Flixter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flixter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Flixter/Pods-Flixter.debug.xcconfig"; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				112526E01F68D0BC00E10314 /* MoviesViewController.swift */,
+				112526E61F68E65700E10314 /* DetailViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				112526CF1F68CF4600E10314 /* AppDelegate.swift in Sources */,
 				112526E11F68D0BC00E10314 /* MoviesViewController.swift in Sources */,
 				112526E41F68DD3500E10314 /* MovieCell.swift in Sources */,
+				112526E71F68E65700E10314 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +406,7 @@
 				112526DF1F68CF4600E10314 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
