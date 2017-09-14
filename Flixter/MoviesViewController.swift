@@ -50,7 +50,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             if let data = data {
                 if let responseDictionary = try!
                     JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-                    self.movies = responseDictionary["results"] as! [NSDictionary]
+                    self.movies = responseDictionary["results"] as? [NSDictionary]
                     self.tableView.reloadData()
                 }
             } else if error != nil {
@@ -90,12 +90,32 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let baseUrl = "https://image.tmdb.org/t/p/w500"
         if let posterPath = movie["poster_path"] as? String {
             let imageUrl = URL(string: baseUrl + posterPath)
-            cell.posterView.setImageWith(imageUrl!)
+            let imageRequest = URLRequest(url: (imageUrl)!)
+            cell.posterView.setImageWith(
+                imageRequest,
+                placeholderImage: nil,
+                success: { (imageRequest, imageResponse, image) -> Void in
+                    
+                    // imageResponse will be nil if the image is cached
+                    if imageResponse != nil {
+                        cell.posterView.alpha = 0.0
+                        cell.posterView.image = image
+                        UIView.animate(withDuration: 1, animations: { () -> Void in
+                            cell.posterView.alpha = 1.0
+                        })
+                    } else {
+                        cell.posterView.image = image
+                    }
+            },
+                failure: { (imageRequest, imageResponse, error) -> Void in
+                    // do something for the failure condition
+            })
         }
         
         
         
         return cell
+    
     }
     
     

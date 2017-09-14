@@ -24,12 +24,32 @@ class DetailViewController: UIViewController {
         
         let overview = movie["overview"] as? String
         overviewLabel.text = overview
-        
+      
         let baseUrl = "https://image.tmdb.org/t/p/w500"
         if let posterPath = movie["poster_path"] as? String {
             let imageUrl = URL(string: baseUrl + posterPath)
-            posterImageView.setImageWith(imageUrl!)
+            let imageRequest = URLRequest(url: (imageUrl)!)
+            self.posterImageView.setImageWith(
+                imageRequest,
+                placeholderImage: nil,
+                success: { (imageRequest, imageResponse, image) -> Void in
+                    
+                    // imageResponse will be nil if the image is cached
+                    if imageResponse != nil {
+                        self.posterImageView.alpha = 0.0
+                        self.posterImageView.image = image
+                        UIView.animate(withDuration: 1, animations: { () -> Void in
+                            self.posterImageView.alpha = 1.0
+                        })
+                    } else {
+                        self.posterImageView.image = image
+                    }
+            },
+                failure: { (imageRequest, imageResponse, error) -> Void in
+                    // do something for the failure condition
+            })
         }
+
         
     }
 
