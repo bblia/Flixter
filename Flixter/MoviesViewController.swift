@@ -10,13 +10,17 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     @IBOutlet weak var tableView: UITableView!
 
     @IBOutlet weak var alertView: UIView!
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var movies: [NSDictionary]?
+    
+    var filteredMovies: [NSDictionary]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +31,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
         tableView.dataSource = self
         tableView.delegate = self
-        // Do any additional setup after loading the view.
+        searchBar.delegate = self
         
         fetchMovies(refreshControl)
         
@@ -51,6 +55,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                 if let responseDictionary = try!
                     JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
                     self.movies = responseDictionary["results"] as? [NSDictionary]
+                    self.filteredMovies = self.movies
                     self.tableView.reloadData()
                 }
             } else if error != nil {
@@ -70,17 +75,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let movies = movies {
-            return movies.count
-        } else {
-            return 0
-        }
+        return filteredMovies?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
         let title = movie["title"] as? String
         let overview = movie["overview"] as? String
         
@@ -118,6 +119,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = false
+        self.searchBar.text = ""
+        search(searchText: "")
+        self.searchBar.resignFirstResponder()
+    }
     
     // MARK: - Navigation
 
@@ -127,11 +138,24 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         // Pass the selected object to the new view controller.
         let cell = sender as! UITableViewCell
         let indexPath = tableView.indexPath(for: cell)
-        let movie = movies![indexPath!.row]
+        let movie = filteredMovies![indexPath!.row]
         
         let detailVieWController = segue.destination as! DetailViewController
         detailVieWController.movie = movie
         
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        search(searchText: searchText);
+    }
+    
+    func search(searchText: String) {
+        self.filteredMovies = searchText.isEmpty ? movies : movies?.filter { (item: NSDictionary) -> Bool in
+            let title = item["title"] as! String
+            return title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        }
+        
+        tableView.reloadData()
     }
     
 
