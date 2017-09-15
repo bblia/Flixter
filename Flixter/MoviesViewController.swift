@@ -10,13 +10,17 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
 
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     @IBOutlet weak var alertView: UIView!
     
     @IBOutlet weak var searchBar: UISearchBar!
+    
+    @IBOutlet weak var viewTab: UISegmentedControl!
     
     var movies: [Movie]?
     
@@ -34,9 +38,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.dataSource = self
         tableView.delegate = self
         searchBar.delegate = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
         self.navigationItem.titleView = self.searchBar;
-
+        collectionView.isHidden = true
         
         fetchMovies(refreshControl)
         
@@ -66,6 +72,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                         self.movies = allMovies
                         self.filteredMovies = self.movies
                         self.tableView.reloadData()
+                        self.collectionView.reloadData()
                     }
                 }
             } else if error != nil {
@@ -97,6 +104,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
+        cell.selectionStyle = .none
         
         if let posterPath = movie.highResPoster {
             let imageUrl = URL(string: posterPath)
@@ -124,6 +132,45 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     }
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredMovies?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionCell", for: indexPath) as! MovieCollectionCell
+        
+        let movie = filteredMovies![indexPath.row]
+        let title = movie.title
+        
+        cell.title.text = title
+        
+        if let posterPath = movie.highResPoster {
+            let imageUrl = URL(string: posterPath)
+            let imageRequest = URLRequest(url: (imageUrl)!)
+            cell.posterImage.setImageWith(
+                imageRequest,
+                placeholderImage: nil,
+                success: { (imageRequest, imageResponse, image) -> Void in
+                    if imageResponse != nil {
+                        cell.posterImage.alpha = 0.0
+                        cell.posterImage.image = image
+                        UIView.animate(withDuration: 1, animations: { () -> Void in
+                            cell.posterImage.alpha = 1.0
+                        })
+                    } else {
+                        cell.posterImage.image = image
+                    }
+            },
+                failure: { (imageRequest, imageResponse, error) -> Void in
+                    // do something for the failure condition
+            })
+        }
+        
+        return cell
+        
+    }
+
+    
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         self.searchBar.showsCancelButton = true
     }
@@ -141,13 +188,20 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPath(for: cell)
-        let movie = filteredMovies![indexPath!.row]
-        
+        var indexPath: IndexPath?
+        var movie: Movie?
+        if viewTab.selectedSegmentIndex == 0 {
+            let cell = sender as! UITableViewCell
+            indexPath = tableView.indexPath(for: cell)
+            movie = filteredMovies![indexPath!.row]
+        } else {
+            let cell = sender as! UICollectionViewCell
+            indexPath = collectionView.indexPath(for: cell)
+            movie = filteredMovies![indexPath!.row]
+        }
         let detailVieWController = segue.destination as! DetailViewController
         detailVieWController.movie = movie
-        
+
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -163,7 +217,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         tableView.reloadData()
+        collectionView.reloadData()
     }
     
+    @IBAction func viewTypeChosen(_ sender: Any) {
+        if (viewTab.selectedSegmentIndex == 0) {
+            collectionView.isHidden = true
+            tableView.isHidden = false
+        } else {
+            collectionView.isHidden = false
+            tableView.isHidden = true
+        }
+    }
 
 }

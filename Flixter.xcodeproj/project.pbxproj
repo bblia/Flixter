@@ -16,6 +16,7 @@
 		112526E41F68DD3500E10314 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112526E31F68DD3500E10314 /* MovieCell.swift */; };
 		112526E71F68E65700E10314 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112526E61F68E65700E10314 /* DetailViewController.swift */; };
 		11E468CC1F6C58CC0042D611 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E468CB1F6C58CC0042D611 /* Movie.swift */; };
+		11E468CE1F6C8CB60042D611 /* MovieCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E468CD1F6C8CB60042D611 /* MovieCollectionCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		112526E61F68E65700E10314 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		11993340101D43BCA298A5CD /* Pods_Flixter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flixter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11E468CB1F6C58CC0042D611 /* Movie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		11E468CD1F6C8CB60042D611 /* MovieCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCollectionCell.swift; sourceTree = "<group>"; };
 		2429E1B828988562FB21F07A /* Pods-Flixter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flixter.release.xcconfig"; path = "Pods/Target Support Files/Pods-Flixter/Pods-Flixter.release.xcconfig"; sourceTree = "<group>"; };
 		A1E82249F671B4408CFB0423 /* Pods-Flixter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flixter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Flixter/Pods-Flixter.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				112526E31F68DD3500E10314 /* MovieCell.swift */,
+				11E468CD1F6C8CB60042D611 /* MovieCollectionCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11E468CE1F6C8CB60042D611 /* MovieCollectionCell.swift in Sources */,
 				112526CF1F68CF4600E10314 /* AppDelegate.swift in Sources */,
 				112526E11F68D0BC00E10314 /* MoviesViewController.swift in Sources */,
 				112526E41F68DD3500E10314 /* MovieCell.swift in Sources */,
