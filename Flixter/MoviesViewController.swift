@@ -18,9 +18,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var movies: [NSDictionary]?
+    var movies: [Movie]?
     
-    var filteredMovies: [NSDictionary]?
+    var filteredMovies: [Movie]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,11 +52,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
-                if let responseDictionary = try!
-                    JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-                    self.movies = responseDictionary["results"] as? [NSDictionary]
-                    self.filteredMovies = self.movies
-                    self.tableView.reloadData()
+                if let responseDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
+                    if let results = responseDictionary["results"] as? NSArray {
+                        var allMovies: [Movie] = []
+                        for movieResponse in results as! [NSDictionary] {
+                            allMovies.append(Movie(data: movieResponse))
+                        }
+                        self.movies = allMovies
+                        self.filteredMovies = self.movies
+                        self.tableView.reloadData()
+                    }
                 }
             } else if error != nil {
                 self.alertView.isHidden = false
@@ -82,22 +87,19 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
         
         let movie = filteredMovies![indexPath.row]
-        let title = movie["title"] as? String
-        let overview = movie["overview"] as? String
+        let title = movie.title
+        let overview = movie.overview
         
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
         
-        let baseUrl = "https://image.tmdb.org/t/p/w500"
-        if let posterPath = movie["poster_path"] as? String {
-            let imageUrl = URL(string: baseUrl + posterPath)
+        if let posterPath = movie.highResPoster {
+            let imageUrl = URL(string: posterPath)
             let imageRequest = URLRequest(url: (imageUrl)!)
             cell.posterView.setImageWith(
                 imageRequest,
                 placeholderImage: nil,
                 success: { (imageRequest, imageResponse, image) -> Void in
-                    
-                    // imageResponse will be nil if the image is cached
                     if imageResponse != nil {
                         cell.posterView.alpha = 0.0
                         cell.posterView.image = image
@@ -112,8 +114,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                     // do something for the failure condition
             })
         }
-        
-        
         
         return cell
     
@@ -150,9 +150,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func search(searchText: String) {
-        self.filteredMovies = searchText.isEmpty ? movies : movies?.filter { (item: NSDictionary) -> Bool in
-            let title = item["title"] as! String
-            return title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        self.filteredMovies = searchText.isEmpty ? movies : movies?.filter { (item: Movie) -> Bool in
+            if let title = item.title {
+                return title.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            }
+            return false
         }
         
         tableView.reloadData()

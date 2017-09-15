@@ -14,20 +14,19 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
     
-    var movie: NSDictionary! 
+    var movie: Movie!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let title = movie["title"] as? String
+        let title = movie.title
         titleLabel.text = title
         
-        let overview = movie["overview"] as? String
+        let overview = movie.overview
         overviewLabel.text = overview
       
-        let baseUrl = "https://image.tmdb.org/t/p/w500"
-        if let posterPath = movie["poster_path"] as? String {
-            let imageUrl = URL(string: baseUrl + posterPath)
+        if let posterPath = movie.highResPoster {
+            let imageUrl = URL(string: posterPath)
             let imageRequest = URLRequest(url: (imageUrl)!)
             self.posterImageView.setImageWith(
                 imageRequest,
