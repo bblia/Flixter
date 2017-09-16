@@ -24,33 +24,36 @@ class DetailViewController: UIViewController {
         
         let overview = movie.overview
         overviewLabel.text = overview
-      
-        if let posterPath = movie.highResPoster {
-            let imageUrl = URL(string: posterPath)
-            let imageRequest = URLRequest(url: (imageUrl)!)
-            self.posterImageView.setImageWith(
-                imageRequest,
-                placeholderImage: nil,
-                success: { (imageRequest, imageResponse, image) -> Void in
-                    
-                    // imageResponse will be nil if the image is cached
-                    if imageResponse != nil {
-                        self.posterImageView.alpha = 0.0
-                        self.posterImageView.image = image
-                        UIView.animate(withDuration: 1, animations: { () -> Void in
-                            self.posterImageView.alpha = 1.0
-                        })
-                    } else {
-                        self.posterImageView.image = image
-                    }
-            },
-                failure: { (imageRequest, imageResponse, error) -> Void in
-                    // do something for the failure condition
-            })
-        }
-
         
+        let smallImageRequest = URLRequest(url: URL(string: movie.lowResPoster!)! as URL)
+        let largeImageRequest = URLRequest(url: URL(string: movie.highResPoster!)! as URL)
+        
+        self.posterImageView.setImageWith(
+            smallImageRequest,
+            placeholderImage: nil,
+            success: { (smallImageRequest, smallImageResponse, smallImage) -> Void in
+                self.posterImageView.alpha = 0.0
+                self.posterImageView.image = smallImage;
+                
+                UIView.animate(withDuration:0.3, animations: { () -> Void in
+                    
+                    self.posterImageView.alpha = 1.0
+                    
+                }, completion: { (success) -> Void in
+                    self.posterImageView.setImageWith(
+                        largeImageRequest,
+                        placeholderImage: smallImage,
+                        success: { (largeImageRequest, largeImageResponse, largeImage) -> Void in
+                            
+                            self.posterImageView.image = largeImage;
+                            
+                        }
+                    )}
+                )
+        })
     }
+
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
